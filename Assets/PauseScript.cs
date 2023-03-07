@@ -26,7 +26,6 @@ public class PauseScript : MonoBehaviour
                 Time.timeScale = 1f;
                 PauseMenu.SetActive(false);
                 Cursor.visible = false;
-
             }
         }
     }
