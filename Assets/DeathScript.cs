@@ -10,7 +10,8 @@ public class DeathScript : MonoBehaviour
     
     // Start is called before the first frame update
     void Start()
-    {
+    {   
+        PlayerPrefab = Resources.Load("Prefabs/Player") as GameObject;
         GameObject.Find("Main Camera").GetComponent<CameraMovement>().SetNewTarget(gameObject);
     }
 
@@ -18,13 +19,19 @@ public class DeathScript : MonoBehaviour
     void Update()
     {
         if (transform.position.y < -5){
-            PlayerDeath();
+            // PlayerDeath();
+            StartCoroutine(DeathCoroutine());
+
+
         }
     }
     private void OnCollisionEnter2D(Collision2D other) {
         if (other.gameObject.CompareTag("Death")){
 
-            PlayerDeath();
+
+            StartCoroutine(DeathCoroutine());
+
+            // PlayerDeath();
             
         }
     }
@@ -39,14 +46,16 @@ public class DeathScript : MonoBehaviour
     void PlayerDeath(){
 
         Destroy(gameObject);
-
-        StartCoroutine(ExampleCoroutine());
     }
 
-    IEnumerator ExampleCoroutine()
+    IEnumerator DeathCoroutine()
     {
+        gameObject.GetComponent<Renderer>().enabled = false;
         yield return new WaitForSeconds(1);
-        Instantiate(PlayerPrefab, startPoint.transform.position, Quaternion.identity);
+        GameObject newObject = Instantiate(PlayerPrefab, startPoint.transform.position, Quaternion.identity);
+        GameObject.Find("Main Camera").GetComponent<CameraMovement>().SetNewTarget(newObject);
+        Destroy(gameObject);
+
     }
 
 }

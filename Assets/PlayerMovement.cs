@@ -26,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isJumping == false){
             rb.AddForce(new Vector2(rb.velocity.x, jump));
         }
+        if (Input.GetKeyDown("j")){
+            rb.gravityScale = 0;
+        }
     }
     private void OnCollisionEnter2D(Collision2D other) {
         if (other.gameObject.CompareTag("Ground")){
