@@ -7,18 +7,22 @@ public class DeathScript : MonoBehaviour
 {
     private GameObject startPoint;
     public GameObject PlayerPrefab;
+    public bool dying;
+    public int deathCount = 0;
     
     // Start is called before the first frame update
     void Start()
     {   
         PlayerPrefab = Resources.Load("Prefabs/Player") as GameObject;
         GameObject.Find("Main Camera").GetComponent<CameraMovement>().SetNewTarget(gameObject);
+        dying = false;
+        gameObject.name = "Player";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.y < -5){
+        if (transform.position.y < -5 && !dying){
             // PlayerDeath();
             StartCoroutine(DeathCoroutine());
 
@@ -26,7 +30,7 @@ public class DeathScript : MonoBehaviour
         }
     }
     private void OnCollisionEnter2D(Collision2D other) {
-        if (other.gameObject.CompareTag("Death")){
+        if (other.gameObject.CompareTag("Death") && !dying){
 
 
             StartCoroutine(DeathCoroutine());
@@ -50,8 +54,12 @@ public class DeathScript : MonoBehaviour
 
     IEnumerator DeathCoroutine()
     {
+        dying = true;
         gameObject.GetComponent<Renderer>().enabled = false;
-        yield return new WaitForSeconds(1);
+        gameObject.GetComponent<PlayerMovement>().rb.velocity = new Vector2(0f, 0f);
+        gameObject.GetComponent<PlayerMovement>().enabled = false;
+        deathCount += 1;
+        yield return new WaitForSeconds(0.5f);
         GameObject newObject = Instantiate(PlayerPrefab, startPoint.transform.position, Quaternion.identity);
         GameObject.Find("Main Camera").GetComponent<CameraMovement>().SetNewTarget(newObject);
         Destroy(gameObject);
